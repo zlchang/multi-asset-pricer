@@ -11,6 +11,7 @@ MCResult MonteCarloEngine::price(const Payoff& payoff, double maturity, double r
 	size_t nproc = std::thread::hardware_concurrency();
 	if(numPaths_ < nproc)
 		nproc = numPaths_;
+	if(nproc == 0) nproc = 2;
 	
 	size_t numPathProc = numPaths_ / nproc;
 	size_t numPathRemn = numPaths_ % nproc;
@@ -48,7 +49,7 @@ MCResult MonteCarloEngine::price(const Payoff& payoff, double maturity, double r
 			localSumPayoffs += discountedPayoff;
 			localSumSquaredPayoffs += discountedPayoff * discountedPayoff;
 		}
-		return {localSumPayoffs, localSumSquaredPayoffs};
+		return std::pair<double, double>{localSumPayoffs, localSumSquaredPayoffs};
 	};
 	std::vector<std::future<std::pair<double, double>>> futures;
 	futures.reserve(nproc);
