@@ -1,0 +1,45 @@
+{
+  "selected_config": "Debug",
+  "configs": [
+    {
+      "name": "Debug",
+      "flags": 0,
+      "compile_flags": [],
+      "executable": "",
+      "arguments": "",
+      "environment": "PATH=/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/opt/X11/bin:/Library/TeX/texbin:/opt/homebrew/bin",
+      "compiler": "g++16",
+      "remoteFolder": "",
+      "remoteAccount": "-- Open SSH Account Manager --",
+      "workingDirectory": "",
+      "debuggerPath": "",
+      "debuggerCommands": "",
+      "debuggerRemoteEnabled": false,
+      "debuggerRemoteExtended": true,
+      "debuggerRemoteHost": "localhost",
+      "debuggerRemotePort": "2345",
+      "debuggerRemoteCommands": "",
+      "last_executables": []
+    },
+    {
+      "name": "Release",
+      "flags": 0,
+      "compile_flags": [],
+      "executable": "",
+      "arguments": "",
+      "environment": "",
+      "compiler": "/usr/bin/gcc",
+      "remoteFolder": "",
+      "remoteAccount": "-- Open SSH Account Manager --",
+      "workingDirectory": "",
+      "debuggerPath": "",
+      "debuggerCommands": "",
+      "debuggerRemoteEnabled": false,
+      "debuggerRemoteExtended": true,
+      "debuggerRemoteHost": "localhost",
+      "debuggerRemotePort": "2345",
+      "debuggerRemoteCommands": "",
+      "last_executables": []
+    }
+  ]
+}

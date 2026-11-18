@@ -1,0 +1,20 @@
+multi-asset-pricer/
+├── CMakeLists.txt
+├── README.md
+├── include/
+│   └── pricer/
+│       ├── MathUtils.hpp        # Cholesky & linear algebra helpers
+│       ├── Process.hpp          # Stochastic process interface & Multivariate GBM
+│       ├── Payoff.hpp           # Payoff interface & Margrabe Exchange Option
+│       └── MonteCarloEngine.hpp # Path simulator & discounting
+├── src/
+│   ├── Process.cpp
+│   └── MonteCarloEngine.cpp
+└── tests/
+    └── test_margrabe.cpp        # Analytical vs. MC verification
+
+
+cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Debug
+cmake --build build -j
+cd build
+ctest --output-on-failure

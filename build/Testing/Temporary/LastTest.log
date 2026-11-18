@@ -1,0 +1,30 @@
+Start testing: Nov 18 14:19 EST
+----------------------------------------------------------
+1/1 Testing: MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors
+1/1 Test: MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors
+Command: "/Users/zilongchang/Documents/Documents/multi-asset-pricer/build/run_tests" "--gtest_filter=MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors" "--gtest_also_run_disabled_tests"
+Directory: /Users/zilongchang/Documents/Documents/multi-asset-pricer/build
+"MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors" start time: Nov 18 14:19 EST
+Output:
+----------------------------------------------------------
+Running main() from googletest/src/gtest_main.cc
+Note: Google Test filter = MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from MargrabeBenchmark
+[ RUN      ] MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors
+[       OK ] MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors (127 ms)
+[----------] 1 test from MargrabeBenchmark (127 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (127 ms total)
+[  PASSED  ] 1 test.
+<end of output>
+Test time =   0.13 sec
+----------------------------------------------------------
+Test Passed.
+"MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors" end time: Nov 18 14:19 EST
+"MargrabeBenchmark.MatchesAnalyticalPriceWithin3StdErrors" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Nov 18 14:19 EST
