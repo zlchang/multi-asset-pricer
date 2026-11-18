@@ -1,5 +1,6 @@
 // src/MonteCarloEngine.cpp
 #include "pricer/MonteCarloEngine.hpp"
+#include <future>
 #include <random>
 #include <cmath>
 
@@ -18,12 +19,11 @@ MCResult MonteCarloEngine::price(const Payoff& payoff, double maturity, double r
     std::seed_seq seq{seed_};
 	std::vector<unsigned int> thread_seeds(nproc);
     seq.generate(thread_seeds.begin(), thread_seeds.end());
-	std::vector<std::thread> threads;
 
-    std::atomic<double> sumPayoffs = 0.0;
-    std::atomic<double> sumSquaredPayoffs = 0.0;
+    double sumPayoffs = 0.0;
+    double sumSquaredPayoffs = 0.0;
 
-	auto run = [&](unsigned int seed, size_t npaths)->void{
+	auto run = [&](unsigned int seed, size_t npaths)->std::pair<double, double>{
 		std::mt19937_64 rng(seed);
 		size_t nAssets = process_.numAssets();
 		std::normal_distribution<double> normDist(0.0, 1.0);
@@ -33,6 +33,8 @@ MCResult MonteCarloEngine::price(const Payoff& payoff, double maturity, double r
 	
 		double dt = maturity / static_cast<double>(numSteps_);
 		double discountFactor = std::exp(-riskFreeRate * maturity);
+		double localSumPayoffs = 0.0;
+		double localSumSquaredPayoffs = 0.0;
 
 		for(size_t p = 0; p < npaths; ++p){
 			spots = process_.initialSpots();
@@ -43,16 +45,22 @@ MCResult MonteCarloEngine::price(const Payoff& payoff, double maturity, double r
 				process_.evolveStep(spots, dt, Z);
 			}	
 			double discountedPayoff = discountFactor * payoff(spots);
-			sumPayoffs += discountedPayoff;
-			sumSquaredPayoffs += discountedPayoff * discountedPayoff;
+			localSumPayoffs += discountedPayoff;
+			localSumSquaredPayoffs += discountedPayoff * discountedPayoff;
 		}
+		return {localSumPayoffs, localSumSquaredPayoffs};
 	};
+	std::vector<std::future<std::pair<double, double>>> futures;
+	futures.reserve(nproc);
     for (size_t p = 0; p < nproc; ++p) {
-		size_t npaths = numPathProc+ (p < numPathRemn ? 1:0);
-		threads.emplace_back(run, thread_seeds[p], npaths);
+		size_t npaths = numPathProc + (p < numPathRemn ? 1:0);
+		futures.push_back(std::async(std::launch::async, run, thread_seeds[p], npaths));
     }
-	for(std::thread &th: threads)
-		th.join();
+	for(std::future<std::pair<double, double>> &fut: futures){
+		const auto [lsum, lsumSquared] = fut.get();
+		sumPayoffs += lsum;
+		sumSquaredPayoffs += lsumSquared;
+	}
     double mean = sumPayoffs / static_cast<double>(numPaths_);
     double variance = (sumSquaredPayoffs / static_cast<double>(numPaths_)) - (mean * mean);
     double stdError = std::sqrt(variance / static_cast<double>(numPaths_));

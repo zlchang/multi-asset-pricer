@@ -1,5 +1,0 @@
-/Users/zilongchang/Documents/Documents/multi-asset-pricer/build/CMakeFiles/pricer_core.dir
-/Users/zilongchang/Documents/Documents/multi-asset-pricer/build/CMakeFiles/run_tests.dir
-/Users/zilongchang/Documents/Documents/multi-asset-pricer/build/CMakeFiles/test.dir
-/Users/zilongchang/Documents/Documents/multi-asset-pricer/build/CMakeFiles/edit_cache.dir
-/Users/zilongchang/Documents/Documents/multi-asset-pricer/build/CMakeFiles/rebuild_cache.dir
