@@ -40,7 +40,7 @@ set(BOOST_ENABLE_COMPATIBILITY_TARGETS ON)
 include(FetchContent)
 FetchContent_Declare(
     Boost
-	URL https://github.com
+	URL https://github.com/boostorg/boost/releases/download/boost-1.92.0/boost-1.92.0-cmake.tar.xz
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 	FIND_PACKAGE_ARGS NAMES Boost
 )
