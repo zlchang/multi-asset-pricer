@@ -37,7 +37,7 @@ FetchContent_MakeAvailable(GTest)
 include(FetchContent)
 FetchContent_Declare(
     Boost
-    GIT_REPOSITORY https://github.com
+    GIT_REPOSITORY https://github.com/boostorg/boost.git
     GIT_TAG        boost-1.92.0 # Or latest release tag
     GIT_SHALLOW    TRUE
 	FIND_PACKAGE_ARGS NAMES Boost
