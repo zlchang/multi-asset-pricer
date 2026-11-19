@@ -34,6 +34,15 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(GTest)
 # Find the locally installed Google Test package from Homebrew
 #find_package(GTest REQUIRED)
+include(FetchContent)
+FetchContent_Declare(
+    Boost
+    GIT_REPOSITORY https://github.com
+    GIT_TAG        boost-1.92.0 # Or latest release tag
+    GIT_SHALLOW    TRUE
+	FIND_PACKAGE_ARGS NAMES Boost
+)
+FetchContent_MakeAvailable(Boost)
 
 # Core Library
 add_library(pricer_core
@@ -41,11 +50,13 @@ add_library(pricer_core
     src/MonteCarloEngine.cpp
 )
 target_include_directories(pricer_core PUBLIC include)
-target_link_libraries(pricer_core PUBLIC Eigen3::Eigen)
+target_link_libraries(pricer_core PUBLIC Eigen3::Eigen Boost::headers)
 
 # Unit Tests
 enable_testing()
-add_executable(run_tests tests/test_margrabe.cpp)
+add_executable(run_tests tests/test_margrabe.cpp
+	tests/test_autocall.cpp
+)
 target_link_libraries(run_tests PRIVATE pricer_core GTest::gtest_main)
 
 include(GoogleTest)

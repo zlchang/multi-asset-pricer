@@ -1,6 +1,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <boost/math/special_functions/erf.hpp>
 #include <Eigen/Dense>
 #include <stdexcept>
 
@@ -23,6 +24,11 @@ public:
     // Standard normal cumulative distribution function (for analytical Margrabe benchmark)
     static double normCDF(double x) {
         return 0.5 * std::erfc(-x * M_SQRT1_2);
+    }
+	// Inverse normal CDF (PPF) for converting uniform Sobol points to standard normals
+    static double inverseNormCDF(double p) {
+        //return M_SQRT2 * std::erfinv(2.0 * p - 1.0);
+		return M_SQRT2 * boost::math::erf_inv(2.0 * p - 1.0);
     }
 };
 

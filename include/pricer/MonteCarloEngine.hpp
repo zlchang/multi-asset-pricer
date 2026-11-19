@@ -25,7 +25,7 @@ public:
         : process_(process), numPaths_(numPaths), numSteps_(numSteps), seed_(seed) {}
 
     MCResult price(const Payoff& payoff, double maturity, double riskFreeRate) const;
-	//void run(unsigned int seed, size_t npaths, std::atomic<double> &sumPayoffs, std::atomic<double> &sumSquaredPayoffs, const Payoff& payoff, double maturity, double riskFreeRate) const;
+	MCResult pricePathDependent(const Payoff& payoff, const std::vector<double>& obsTimes, double riskFreeRate) const;
 };
 
 } // namespace pricer
