@@ -50,6 +50,25 @@ public:
 	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return 0.;};
 };
 
+class GeometricBasketCallPayoff : public Payoff {
+private:
+    double strike_;
+
+public:
+    explicit GeometricBasketCallPayoff(double strike) : strike_(strike) {}
+
+    double operator()(const Eigen::VectorXd& terminalSpots) const override {
+        const size_t n = static_cast<size_t>(terminalSpots.size());
+        double logSum = 0.0;
+        for (size_t i = 0; i < n; ++i) {
+            logSum += std::log(terminalSpots[i]);
+        }
+        double geomMean = std::exp(logSum / static_cast<double>(n));
+        return std::max(geomMean - strike_, 0.0);
+    }
+	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return 0.;};
+};
+
 class WorstOfAutocallablePayoff : public Payoff {
 private:
     std::vector<double> observationTimes_; // e.g., {0.25, 0.5, 0.75, 1.0}

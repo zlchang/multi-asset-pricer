@@ -58,6 +58,7 @@ target_link_libraries(pricer_core PUBLIC Eigen3::Eigen Boost::headers)
 enable_testing()
 add_executable(run_tests tests/test_margrabe.cpp
 	tests/test_autocall.cpp
+	tests/test_geometric_basket.cpp
 )
 target_link_libraries(run_tests PRIVATE pricer_core GTest::gtest_main)
 

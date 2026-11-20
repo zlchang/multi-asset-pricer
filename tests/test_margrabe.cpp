@@ -22,9 +22,8 @@ TEST(MargrabeBenchmark, MatchesAnalyticalPriceWithin3StdErrors) {
     params.dividends = Eigen::Vector2d(0.02, 0.03);
     params.vols = Eigen::Vector2d(0.20, 0.25);
 
-    params.corr = Eigen::Matrix2d();
-    params.corr << 1.0, 0.6,
-                   0.6, 1.0;
+    params.corr = (Eigen::Matrix2d() << 1.0, 0.6,
+                   0.6, 1.0).finished();
 
     double T = 1.0;
     double exactPrice = analyticalMargrabe(100.0, 95.0, 0.02, 0.03, 0.20, 0.25, 0.6, T);
