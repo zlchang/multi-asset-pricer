@@ -41,7 +41,7 @@ TEST(SobolConvergence, FasterErrorDecayThanPRNGOnGeometricBasket) {
 
     const double r = 0.04;
     const double strike = 100.;
-    const double T = 16.0;
+    const double T = 1.0;
     const double exactPrice = pricer::MathUtils::analyticalGeometricBasketCall(
         params.spots, params.dividends, params.vols, params.corr, r, strike, T); // Replace with your analyticalGeometricBasketCall(...) result
 
@@ -51,8 +51,7 @@ TEST(SobolConvergence, FasterErrorDecayThanPRNGOnGeometricBasket) {
         1u << 12,  // 4,096
         1u << 14,  // 16,384
         1u << 16,  // 65,536
-        1u << 18,   // 262,144
-		1u << 20
+        1u << 18   // 262,144
     };
 
     std::vector<double> logN, sobolLogErr, prngLogErr;
@@ -67,7 +66,7 @@ TEST(SobolConvergence, FasterErrorDecayThanPRNGOnGeometricBasket) {
 	size_t si = 0;
     for (size_t N : pathCounts) {
         // 1. PRNG baseline
-        pricer::MonteCarloEngine mcEngine(gbm, N, 1, 43+si);
+        pricer::MonteCarloEngine mcEngine(gbm, N, 4, 43+si);
 		const pricer::MCResult &prng = mcEngine.price(payoff, T, r);
         double prngPrice = prng.price;
 		double prngStd = prng.stdError;

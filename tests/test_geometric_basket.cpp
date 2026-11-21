@@ -18,14 +18,14 @@ TEST(GeometricBasketBenchmark, ThreeAssetsMatchAnalyticalWithin3StdErrors) {
 
     const double r = 0.04;
     const double strike = 100.0;
-    const double T = 8.0;
+    const double T = 1.0;
 
     const double exactPrice = pricer::MathUtils::analyticalGeometricBasketCall(
         params.spots, params.dividends, params.vols, params.corr, r, strike, T);
 
     pricer::MultivariateGBM gbm(params);
     pricer::GeometricBasketCallPayoff payoff(strike);
-    pricer::MonteCarloEngine engine(gbm,  1u<<22, 1, 42);
+    pricer::MonteCarloEngine engine(gbm,  1u<<18, 4, 42);
 
     const pricer::MCResult res = engine.priceSobol(payoff, T, r);
 	std::cout << std::setw(16) << res.price

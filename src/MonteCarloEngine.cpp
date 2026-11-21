@@ -187,7 +187,7 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
     double sumPayoffs = 0.0;
     double sumSquaredPayoffs = 0.0;
     //size_t totalPathsSimulated = numPaths_ * 2; // 2x due to antithetic pairing
-	size_t dim = nAssets;
+	size_t dim = nAssets*numObs;
 
 	auto run = [&](unsigned int seed, size_t npaths)->std::pair<double, double>{
 		//PathMatrix path1(numObs + 1);
@@ -209,7 +209,7 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
 		
 		double lSumPayoffs = 0.0;
 		double lSumSquaredPayoffs = 0.0;
-		const int nreps = 1u << 8;
+		const int nreps = 1u << 4;
 		const int nri = npaths/nreps;
 		const int nrr = npaths%nreps;
 		std::vector<size_t> rpaths(nreps);
@@ -220,6 +220,7 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
 		for(size_t rp = 0; rp < nreps; ++rp){
 			sobol.redraw();
 		for (size_t p = 0; p < rpaths[rp]; ++p) {
+			sobol.nextNormal(normalPoint);
 			// Initialize spots
 			//for (std::size_t j = 0; j < dim; ++j) {
 				//shift[j] = dist(rng);
@@ -229,6 +230,7 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
 			//if(p == 0) printf("normalPoint=%lf seed=%ud\n", normalPoint[0], seed);
 			//double prevT = 0.0;
 			double dt = maturity / static_cast<double>(numSteps_);
+			//if(p == 0) printf("numSteps=%zu\n", numSteps_);
 			spot1 = process_.initialSpots();
 			//spot2 = process_.initialSpots();
 			for (size_t step = 0; step < numObs; ++step) {
@@ -237,7 +239,6 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
 				size_t offset = step * nAssets;
 				// Generate standard normal increments
 				for (size_t i = 0; i < nAssets; ++i) {
-					sobol.nextNormal(normalPoint);
 					//Z[i] = MathUtils::inverseNormCDF(uniformPoint[offset + i]);
 					Z[i] = normalPoint[offset+i];
 				}
