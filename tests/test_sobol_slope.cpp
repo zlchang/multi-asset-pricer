@@ -66,7 +66,7 @@ TEST(SobolConvergence, FasterErrorDecayThanPRNGOnGeometricBasket) {
 	size_t si = 0;
     for (size_t N : pathCounts) {
         // 1. PRNG baseline
-        pricer::MonteCarloEngine mcEngine(gbm, N, 4, 43+si);
+        pricer::MonteCarloEngine mcEngine(gbm, N, 2, 43+si);
 		const pricer::MCResult &prng = mcEngine.price(payoff, T, r);
         double prngPrice = prng.price;
 		double prngStd = prng.stdError;
