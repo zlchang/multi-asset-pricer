@@ -59,6 +59,7 @@ enable_testing()
 add_executable(run_tests tests/test_margrabe.cpp
 	tests/test_autocall.cpp
 	tests/test_geometric_basket.cpp
+	tests/test_sobol_slope.cpp
 )
 target_link_libraries(run_tests PRIVATE pricer_core GTest::gtest_main)
 

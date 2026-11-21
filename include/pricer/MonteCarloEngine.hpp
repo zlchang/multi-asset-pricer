@@ -26,6 +26,7 @@ public:
 
     MCResult price(const Payoff& payoff, double maturity, double riskFreeRate) const;
 	MCResult pricePathDependent(const Payoff& payoff, const std::vector<double>& obsTimes, double riskFreeRate) const;
+	MCResult priceSobol(const Payoff& payoff, double maturity, double riskFreeRate) const;
 };
 
 } // namespace pricer
