@@ -190,26 +190,17 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
 	size_t dim = nAssets*numObs;
 
 	auto run = [&](unsigned int seed, size_t npaths)->std::pair<double, double>{
-		//PathMatrix path1(numObs + 1);
-		//PathMatrix path2(numObs + 1);
-		//for (auto& p : path2) p.resize(nAssets);
-		//for (auto& p : path1) p.resize(nAssets);
 		Eigen::VectorXd spot1(nAssets);
 		Eigen::VectorXd spot2(nAssets);
 		
 		Eigen::VectorXd Z(nAssets);
-		//printf("dim=%zu seed=%ud\n", dim, seed);
-		//std::mt19937_64 rng(seed);
-		//std::uniform_real_distribution<double> dist(0.0, 1.0);
-		//std::vector<double> shift(dim);
-		//std::vector<double> uniformSobol(dim, 0.0);
-		//std::vector<double> uniformPoint(dim, 0.0);
+
 		SobolEngine sobol(dim, seed);
 		std::vector<double> normalPoint(dim, 0.0);
 		
 		double lSumPayoffs = 0.0;
 		double lSumSquaredPayoffs = 0.0;
-		const int nreps = 1u << 4;
+		const int nreps = 1u << 3;
 		const int nri = npaths/nreps;
 		const int nrr = npaths%nreps;
 		std::vector<size_t> rpaths(nreps);
@@ -219,52 +210,38 @@ MCResult MonteCarloEngine::priceSobol(const Payoff& payoff,
 		//std::normal_distribution<double> normDist(0.0, 1.0);
 		for(size_t rp = 0; rp < nreps; ++rp){
 			sobol.redraw();
-		for (size_t p = 0; p < rpaths[rp]; ++p) {
-			sobol.nextNormal(normalPoint);
-			// Initialize spots
-			//for (std::size_t j = 0; j < dim; ++j) {
-				//shift[j] = dist(rng);
-			//}
-			//sobol.nextUniform(uniformSobol);
-			//applyDigitalShift(uniformSobol, shift, uniformPoint);
-			//if(p == 0) printf("normalPoint=%lf seed=%ud\n", normalPoint[0], seed);
-			//double prevT = 0.0;
-			double dt = maturity / static_cast<double>(numSteps_);
-			//if(p == 0) printf("numSteps=%zu\n", numSteps_);
-			spot1 = process_.initialSpots();
-			//spot2 = process_.initialSpots();
-			for (size_t step = 0; step < numObs; ++step) {
-				//double t = obsTimes[step];
-				//double dt = t - prevT;
-				size_t offset = step * nAssets;
-				// Generate standard normal increments
-				for (size_t i = 0; i < nAssets; ++i) {
-					//Z[i] = MathUtils::inverseNormCDF(uniformPoint[offset + i]);
-					Z[i] = normalPoint[offset+i];
-				}
-				//if(p < 5){
-					//printf("%lf %lf %lf\n", Z[0], Z[1], Z[2]);
-				//}
-
-				//path1[step + 1] = path1[step];
-				//path2[step + 1] = path2[step];
+			for (size_t p = 0; p < rpaths[rp]; ++p) {
+				sobol.nextNormal(normalPoint);
+			
+				//if(p == 0) printf("normalPoint=%lf seed=%ud\n", normalPoint[0], seed);
+			
+				double dt = maturity / static_cast<double>(numSteps_);
+				//if(p == 0) printf("numSteps=%zu\n", numSteps_);
+				spot1 = process_.initialSpots();
+				spot2 = process_.initialSpots();
+				for (size_t step = 0; step < numObs; ++step) {
+					size_t offset = step * nAssets;
+					// Generate standard normal increments
+					for (size_t i = 0; i < nAssets; ++i) {
+						Z[i] = normalPoint[offset+i];
+					}
+					//if(p < 5){
+						//printf("%lf %lf %lf\n", Z[0], Z[1], Z[2]);
+					//}
 				
-				process_.evolveStep(spot1, dt, Z);
-				//process_.evolveStep(spot2, dt, -Z);
+					process_.evolveStep(spot1, dt, Z);
+					process_.evolveStep(spot2, dt, -Z);
+				}
 
-				//prevT = t;
+				double pay1 = payoff(spot1);
+				double pay2 = payoff(spot2);
+
+				double avgPayoff = 0.5 * (pay1 + pay2);
+			
+				double discountedPayoff = discountFactor * avgPayoff;
+				lSumPayoffs += discountedPayoff;
+				lSumSquaredPayoffs += discountedPayoff * discountedPayoff;
 			}
-
-			//double pay = payoff.evaluate(path[numObs], process_.initialSpots());
-			double pay1 = payoff(spot1);
-			//double pay2 = payoff(spot2);
-
-			//double avgPayoff = 0.5 * (pay1 + pay2);
-			double avgPayoff = pay1;
-			double discountedPayoff = discountFactor * avgPayoff;
-			lSumPayoffs += discountedPayoff;
-			lSumSquaredPayoffs += discountedPayoff * discountedPayoff;
-		}
 		}
 		return std::pair<double, double>{lSumPayoffs, lSumSquaredPayoffs};	
     };

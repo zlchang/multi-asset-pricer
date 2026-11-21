@@ -23,7 +23,7 @@ public:
     double operator()(const Eigen::VectorXd& terminalSpots) const override {
         return std::max(terminalSpots[0] - terminalSpots[1], 0.0);
     }
-	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return 0.;};
+	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return operator()(path.back());};
 };
 
 class EuropeanCallPayoff : public Payoff {
@@ -35,7 +35,7 @@ public:
     double operator()(const Eigen::VectorXd& terminalSpots) const override {
         return std::max(terminalSpots[0] - strike_, 0.0);
     }
-	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return 0.;};
+	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return operator()(path.back());};
 };
 
 class EuropeanPutPayoff : public Payoff {
@@ -47,7 +47,7 @@ public:
     double operator()(const Eigen::VectorXd& terminalSpots) const override {
         return std::max(strike_ - terminalSpots[0], 0.0);
     }
-	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return 0.;};
+	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return operator()(path.back());};
 };
 
 class GeometricBasketCallPayoff : public Payoff {
@@ -66,7 +66,7 @@ public:
         double geomMean = std::exp(logSum / static_cast<double>(n));
         return std::max(geomMean - strike_, 0.0);
     }
-	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return 0.;};
+	double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override { return operator()(path.back());};
 };
 
 class WorstOfAutocallablePayoff : public Payoff {
@@ -88,7 +88,9 @@ public:
           protectionBarrier_(protectionBarrier),
           couponRatePerYear_(couponRate),
           nominal_(nominal) {}
-	double operator()(const Eigen::VectorXd& terminalSpots) const override { return 0.;}
+	double operator()(const Eigen::VectorXd& terminalSpots) const override { 		
+		return evaluate(PathMatrix{terminalSpots}, terminalSpots);
+	}
     double evaluate(const PathMatrix& path, const Eigen::VectorXd& initialSpots) const override {
         size_t numObs = observationTimes_.size();
         size_t nAssets = initialSpots.size();
